@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:theme="@style/ToolbarTheme"
+    tools:context="com.aripir.nytimessearch.activities.SearchActivity">
+
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@mipmap/ic_filter"
+        android:title="@string/action_filter"
+        android:orderInCategory="2"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@mipmap/ic_search"
+        android:title="@string/search"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:itemTextColor="@color/colorWhite"
+        android:orderInCategory="1"
+        />
+</menu>

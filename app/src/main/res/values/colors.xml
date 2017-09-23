@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorTurqoise">#26E1EB</color>
+    <color name="colorOrange">#FC5830</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorSolitude">#E9EBEE</color>
+    <color name="colorSanMarino">#4469AF</color>
+</resources>

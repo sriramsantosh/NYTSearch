@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/colorSolitude">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:elevation="3dp"
+        app:cardUseCompatPadding="true"
+        card_view:contentPadding="5dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="@dimen/cardview_compat_inset_shadow"
+        >
+
+<RelativeLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/colorWhite"
+    android:padding="6dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/articleImage"
+        android:layout_width="180dp"
+        android:layout_height="120dp"
+        android:scaleType="center"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+
+    <TextView
+        android:id="@+id/newsCategory"
+        android:layout_width="45dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="140dp"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorSanMarino"
+        android:text="Sports"
+        android:includeFontPadding="true"
+        android:maxLines="3"
+        android:ellipsize="end"
+        />
+
+    <TextView
+        android:id="@+id/headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="165dp"
+        android:textAlignment="gravity"
+        android:textColor="@color/colorPrimaryDark"
+        android:maxLines="3"
+        android:ellipsize="end"
+         />
+</RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>
