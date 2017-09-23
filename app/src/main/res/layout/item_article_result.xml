@@ -34,7 +34,7 @@
 
     <TextView
         android:id="@+id/newsCategory"
-        android:layout_width="45dp"
+        android:layout_width="65dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="6dp"
@@ -42,6 +42,7 @@
         android:textColor="@color/colorWhite"
         android:background="@color/colorSanMarino"
         android:text="Sports"
+        android:textAlignment="center"
         android:includeFontPadding="true"
         android:maxLines="3"
         android:ellipsize="end"
