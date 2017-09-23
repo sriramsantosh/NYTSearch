@@ -14,6 +14,12 @@ public class FilterPreferences {
     private boolean fashion;
     private boolean sports;
 
+    public static final String OLDEST = "Oldest";
+    public static final String NEWEST = "Newest";
+    public static final String ARTS = "arts";
+    public static final String FASHION = "fashion";
+    public static final String SPORTS = "sports";
+
     public FilterPreferences(){
 
         Calendar mCurrentDate = Calendar.getInstance();
@@ -27,6 +33,14 @@ public class FilterPreferences {
         setArts(true);
         setSports(true);
         setFashion(true);
+    }
+
+    public FilterPreferences(String beginDate, String sort, boolean isArts, boolean isFashion, boolean isSports){
+        this.beginDate = beginDate;
+        this.sort = sort;
+        this.arts = isArts;
+        this.fashion = isFashion;
+        this.sports = isSports;
     }
 
     public String getBeginDate() {

@@ -41,7 +41,8 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
     private MenuItem searchItem;
     private UserPreferencesDBHelper userPreferencesDBHelper;
     private EndlessRecyclerViewScrollListener scrollListener;
-
+    private boolean isFilteredSearch;
+    private static String searchQuery;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,22 +66,21 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
         articles = new ArrayList<>();
         articleArrayAdapter = new ArticleArrayAdapter(this, articles);
         recyclerView.setAdapter(articleArrayAdapter);
+        searchQuery = "";
 
         scrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-               // loadNextDataFromApi(page);
 
-                searchAndDisplayResults(page, "");
+                searchAndDisplayResultsWithFilters(userPreferencesDBHelper.getUserPreferences(), page, searchQuery);
             }
         };
 
         recyclerView.addOnScrollListener(scrollListener);
 
-
-        searchAndDisplayResults(0, "");
+        searchAndDisplayResultsWithFilters(userPreferencesDBHelper.getUserPreferences(), 0, searchQuery);
     }
 
     @Override
@@ -98,13 +98,15 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
 
                 searchView.clearFocus();
                 //TODO showProgressBar(); // Have a beautiful method here.... https://github.com/jpardogo/GoogleProgressBar
-                articles.clear();
-                searchAndDisplayResults(0, query);
+                articles.clear(); // Clear everything and only display with query and filters.
+                searchQuery = query;
+                searchAndDisplayResultsWithFilters(userPreferencesDBHelper.getUserPreferences(), 0, query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                searchQuery = newText;
                 return false;
             }
         });
@@ -115,6 +117,8 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
 
     private void searchAndDisplayResults(int page, String query)
     {
+        isFilteredSearch = false;
+
         FilterPreferences filterPreferences = userPreferencesDBHelper.getUserPreferences();
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
@@ -167,6 +171,13 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
 
                 }
             }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("DEBUG", "Status code: " + statusCode);
+                Log.d("DEBUG", errorResponse.toString());
+            }
+
         });
 
     }
@@ -202,54 +213,49 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
 
 
     @Override
-    public void onComplete(String datePick, String timeFrame, boolean arts, boolean fashion, boolean sports) {
+    public void onComplete(FilterPreferences filterPreferences) {
 
-        //Insert it into DB
-        userPreferencesDBHelper.insertFilterPreferences(datePick,timeFrame, arts, fashion, sports);
+        searchAndDisplayResultsWithFilters(filterPreferences, 0, searchQuery);
 
-        searchAndDisplayResultsWithFilters(datePick, timeFrame, arts, fashion, sports);
-
-
-        System.out.println(timeFrame);
-        System.out.println(datePick);
-        System.out.println(arts);
-        System.out.println(fashion);
-        System.out.println(sports);
+        System.out.println(filterPreferences.toString());
     }
 
-    private void searchAndDisplayResultsWithFilters(String datePick, String timeFrame, boolean arts, boolean fashion, boolean sports) {
+
+    private void searchAndDisplayResultsWithFilters(FilterPreferences filterPreferences, int page, String searchQuery) {
+
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
 
-        String[] date= datePick.split("/");
+        String[] date= filterPreferences.getBeginDate().split("/");
 
         StringBuilder sb = new StringBuilder();
 
-        if(arts || fashion || sports)
+        if(filterPreferences.isArts() || filterPreferences.isFashion() || filterPreferences.isSports())
             sb.append("news_desk:(");
 
-        if(arts)
+        if(filterPreferences.isArts())
             sb.append("'Arts' ");
-        if(fashion)
+        if(filterPreferences.isFashion())
             sb.append("'Fashion' ");
-        if(sports)
+        if(filterPreferences.isSports())
             sb.append("'Sports'");
 
         sb.trimToSize();
 
-
         RequestParams requestParams = new RequestParams();
         requestParams.put("api-key", "cf6f54a4f8ad42e6899acaa526428ca8");
-        requestParams.put("page", 0);
-        requestParams.put("sort", timeFrame.toLowerCase());
+        requestParams.put("page", page);
+        requestParams.put("sort", filterPreferences.getSort().toLowerCase());
         if(date[0].length()==1)
             requestParams.put("begin_date", date[2]+"0"+ date[0]+date[1]);
         else
             requestParams.put("begin_date", date[2]+"0"+ date[0]+date[1]);
-        if(arts || fashion || sports) {
+        if(filterPreferences.isArts() || filterPreferences.isFashion() || filterPreferences.isSports()){
             sb.append(")");
             requestParams.put("fq", sb.toString());
         }
+        if(searchQuery!=null && !searchQuery.isEmpty())
+            requestParams.put("q", searchQuery);
 
         client.get(url, requestParams, new JsonHttpResponseHandler(){
 
@@ -260,8 +266,6 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
                 try{
                     articleResults =  response.getJSONObject("response").getJSONArray("docs");
 
-                    if(articles.size()>0)
-                        articles.clear();
                     articles.addAll(Article.fromJSONArray(articleResults));
                     recyclerView.swapAdapter(new ArticleArrayAdapter(getApplicationContext(), articles), false);
                 }catch(JSONException e){
