@@ -78,6 +78,7 @@ public class FilterFragment extends DialogFragment {
         checkBoxSports = (CheckBox) view.findViewById(R.id.sportsSB);
         timeFrameSpinner = (Spinner)  view.findViewById(R.id.timeFrameSP);
 
+
         mCurrentDate = Calendar.getInstance();
 
         day = mCurrentDate.get(Calendar.DAY_OF_MONTH);

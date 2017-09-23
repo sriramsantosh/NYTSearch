@@ -8,4 +8,5 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorSolitude">#E9EBEE</color>
     <color name="colorSanMarino">#4469AF</color>
+    <color name="my_spinner_text_color">#090606</color>
 </resources>

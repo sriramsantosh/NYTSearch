@@ -63,11 +63,13 @@ public class ArticleArrayAdapter extends  RecyclerView.Adapter<ArticleArrayAdapt
         // for any view that will be set as you render a row
         private ImageView imageView;
         private TextView headline;
+        private TextView newsCategory;
 
         public ViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.articleImage);
             headline = (TextView) itemView.findViewById(R.id.headline);
+            newsCategory = (TextView) itemView.findViewById(R.id.newsCategory);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -76,7 +78,6 @@ public class ArticleArrayAdapter extends  RecyclerView.Adapter<ArticleArrayAdapt
                     Intent intent = new Intent(context, ArticleActivity.class);
                     intent.putExtra("article", Parcels.wrap(articles.get(itemPosition)));
                     context.startActivity(intent);
-                    //Toast.makeText(context, itemPosition + ":" + String.valueOf(headline.getText()), Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -88,33 +89,38 @@ public class ArticleArrayAdapter extends  RecyclerView.Adapter<ArticleArrayAdapt
             headline.setText(article.getHeadline());
 
             String thumbNail = article.getThumbNail();
-
             String publishDate = article.getPublishDate();
+            String newsDesk = article.getNewsDesk().toLowerCase();
+
+
+            if(newsDesk.contains("sports")){
+                newsCategory.setBackgroundColor(Color.parseColor("#4469AF"));
+                newsCategory.setText("Sports");
+            }else if(newsDesk.contains("arts")){
+                newsCategory.setBackgroundColor(Color.parseColor("#44B37F"));
+                newsCategory.setText("Arts");
+            }else if(newsDesk.contains("fashion")){
+                newsCategory.setBackgroundColor(Color.parseColor("#FDA137"));
+                newsCategory.setText("Fasion");
+            }
 
             if (thumbNail != null && !thumbNail.isEmpty()) {
 
                 if(publishDate.contains("22")){
 
-                     int a = imageView.getLayoutParams().height;
+                    int a = imageView.getLayoutParams().height;
                     int b = imageView.getLayoutParams().width;
 
                     imageView.getLayoutParams().height = 720;
                     imageView.getLayoutParams().width = 540;
                     headline.setTextColor(Color.WHITE);
 
-//                    int dimensionInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 135,  getResources().getDisplayMetrics());
-//                    imageView.getLayoutParams().height = dimensionInDp;
-//                    imageView.getLayoutParams().width = dimensionInDp;
                     imageView.requestLayout();
 
-//                    Glide.with(context)
-//                            .load(Uri.parse(thumbNail))
-//                            .override(720, 480)
-//                            .into(imageView);
-                    }
-                //else
-                    Glide.with(context)
+                }
+                Glide.with(context)
                         .load(Uri.parse(thumbNail))
+                        .fitCenter()
                         .centerCrop()
                         .into(imageView);
 
