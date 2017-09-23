@@ -2,6 +2,8 @@ package com.aripir.nytimessearch.models;
 
 import android.util.Log;
 
+import com.google.gson.JsonObject;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,8 +40,15 @@ public class Article {
             this.newsDesk = jsonObject.getString("new_desk");
             JSONArray multimedia = jsonObject.getJSONArray("multimedia");
             if(multimedia!=null && multimedia.length()>0){
-                JSONObject multimediaJSON = multimedia.getJSONObject(0);
-                this.thumbNail = "http://www.nytimes.com/" + multimediaJSON.getString("url") ;
+                for(int i=0;i<multimedia.length(); i++){
+                    JSONObject multimediaJSON = multimedia.getJSONObject(i);
+                    if(multimediaJSON.has("subtype"))
+                        if(multimediaJSON.getString("subtype").equalsIgnoreCase("wide"))
+                            this.thumbNail = "http://www.nytimes.com/" + multimediaJSON.getString("url");
+
+                }
+            //    JSONObject multimediaJSON = multimedia.getJSONObject(0);
+            //    this.thumbNail = "http://www.nytimes.com/" + multimediaJSON.getString("url") ;
             }else{
                 this.thumbNail = "";
             }

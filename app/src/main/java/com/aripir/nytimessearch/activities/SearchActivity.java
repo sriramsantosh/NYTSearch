@@ -41,7 +41,6 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
     private MenuItem searchItem;
     private UserPreferencesDBHelper userPreferencesDBHelper;
     private EndlessRecyclerViewScrollListener scrollListener;
-    private boolean isFilteredSearch;
     private static String searchQuery;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,74 +113,6 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
         return true;
     }
 
-
-    private void searchAndDisplayResults(int page, String query)
-    {
-        isFilteredSearch = false;
-
-        FilterPreferences filterPreferences = userPreferencesDBHelper.getUserPreferences();
-        AsyncHttpClient client = new AsyncHttpClient();
-        String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
-
-
-        String[] date= filterPreferences.getBeginDate().split("/");
-
-        StringBuilder sb = new StringBuilder();
-
-        if(filterPreferences.isArts() || filterPreferences.isFashion() || filterPreferences.isSports())
-            sb.append("news_desk:(");
-
-        if(filterPreferences.isArts())
-            sb.append("'Arts' ");
-        if(filterPreferences.isFashion())
-            sb.append("'Fashion' ");
-        if(filterPreferences.isSports())
-            sb.append("'Sports'");
-
-        sb.trimToSize();
-
-        RequestParams requestParams = new RequestParams();
-        requestParams.put("api-key", "cf6f54a4f8ad42e6899acaa526428ca8");
-        requestParams.put("page", page);
-        requestParams.put("sort", filterPreferences.getSort().toLowerCase());
-        if(query!=null && !query.isEmpty())
-        requestParams.put("q", query);
-        if(date[0].length()==1)
-            requestParams.put("begin_date", date[2]+"0"+ date[0]+date[1]);
-        else
-            requestParams.put("begin_date", date[2]+"0"+ date[0]+date[1]);
-        if(filterPreferences.isArts() || filterPreferences.isFashion() || filterPreferences.isSports()){
-            sb.append(")");
-            requestParams.put("fq", sb.toString());
-        }
-
-
-        client.get(url, requestParams, new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("DEBUG", response.toString());
-                JSONArray articleResults = null;
-                try{
-                    articleResults =  response.getJSONObject("response").getJSONArray("docs");
-
-
-                    articles.addAll(Article.fromJSONArray(articleResults));
-                    recyclerView.swapAdapter(new ArticleArrayAdapter(getApplicationContext(), articles), false);
-                }catch(JSONException e){
-
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("DEBUG", "Status code: " + statusCode);
-                Log.d("DEBUG", errorResponse.toString());
-            }
-
-        });
-
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -214,9 +145,7 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
 
     @Override
     public void onComplete(FilterPreferences filterPreferences) {
-
         searchAndDisplayResultsWithFilters(filterPreferences, 0, searchQuery);
-
         System.out.println(filterPreferences.toString());
     }
 
@@ -265,8 +194,7 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
                 JSONArray articleResults = null;
                 try{
                     articleResults =  response.getJSONObject("response").getJSONArray("docs");
-
-                    articles.addAll(Article.fromJSONArray(articleResults));
+                    articles.addAll(0, Article.fromJSONArray(articleResults));
                     recyclerView.swapAdapter(new ArticleArrayAdapter(getApplicationContext(), articles), false);
                 }catch(JSONException e){
 
