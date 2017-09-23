@@ -90,7 +90,7 @@ public class FilterFragment extends DialogFragment {
        // datePickTV.setText(month+"/" + day + "/" + year);
         datePickTV.setText(filterPreferences.getBeginDate());
         if(filterPreferences.getSort().equalsIgnoreCase("oldest"))
-        timeFrameSpinner.setSelection(1);
+            timeFrameSpinner.setSelection(1);
 
         if(!filterPreferences.isArts())
             checkBoxArts.setChecked(false);
@@ -129,7 +129,7 @@ public class FilterFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 userPreferencesDBHelper.insertFilterPreferences(datePickTV.getText().toString(), timeFrameSpinner.getSelectedItem().toString(), checkBoxArts.isChecked(), checkBoxFashion.isChecked(), checkBoxSports.isChecked() );
-                mListener.onComplete(datePickTV.getText().toString(), timeFrameSpinner.getSelectedItem().toString(), checkBoxArts.isChecked(), checkBoxFashion.isChecked(), checkBoxSports.isChecked() );
+                mListener.onComplete(new FilterPreferences(datePickTV.getText().toString(), timeFrameSpinner.getSelectedItem().toString(), checkBoxArts.isChecked(), checkBoxFashion.isChecked(), checkBoxSports.isChecked() ));
                 getDialog().dismiss();
             }
         });
@@ -137,7 +137,7 @@ public class FilterFragment extends DialogFragment {
 
 
     public static interface OnCompleteListener {
-        public abstract void onComplete(String datePick, String timeFrame, boolean arts, boolean fashion, boolean sports );
+        public abstract void onComplete(FilterPreferences filterPreferences);
     }
 
 

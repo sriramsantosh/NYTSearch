@@ -57,6 +57,13 @@ public class ArticleArrayAdapter extends  RecyclerView.Adapter<ArticleArrayAdapt
     }
 
 
+    @Override
+    public int getItemViewType(int position) {
+        //More to come
+
+        return 0;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         // Your holder should contain a member variable
