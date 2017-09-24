@@ -1,6 +1,12 @@
 package com.aripir.nytimessearch.activities;
 
+import android.content.Context;
+import android.content.Intent;
+
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +17,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.aripir.nytimessearch.adapters.ArticleArrayAdapter;
 import com.aripir.nytimessearch.listeners.EndlessRecyclerViewScrollListener;
@@ -19,6 +28,8 @@ import com.aripir.nytimessearch.R;
 import com.aripir.nytimessearch.fragments.FilterFragment;
 import com.aripir.nytimessearch.models.FilterPreferences;
 import com.aripir.nytimessearch.models.UserPreferencesDBHelper;
+import com.aripir.nytimessearch.util.CommonLib;
+import com.github.jorgecastilloprz.FABProgressCircle;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -32,7 +43,7 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-public class SearchActivity extends AppCompatActivity implements FilterFragment.OnCompleteListener{
+public class SearchActivity extends AppCompatActivity implements FilterFragment.OnCompleteListener {
 
     Toolbar toolbar;
     private List<Article> articles;
@@ -42,22 +53,26 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
     private UserPreferencesDBHelper userPreferencesDBHelper;
     private EndlessRecyclerViewScrollListener scrollListener;
     private static String searchQuery;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         toolbar = (Toolbar) findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
+
+        checkForInternetAndNavigate();
+
         userPreferencesDBHelper = UserPreferencesDBHelper.getInstance(getApplicationContext());
-        if(userPreferencesDBHelper.isDBEmpty())
+        if (userPreferencesDBHelper.isDBEmpty())
             userPreferencesDBHelper.insertFilterPreferences(new FilterPreferences()); // Enter default preferences into DB
 
         setUpViews();
+
     }
 
 
-    private void setUpViews()
-    {
+    private void setUpViews() {
         recyclerView = (RecyclerView) findViewById(R.id.gvArticles);
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
@@ -145,6 +160,7 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
 
     @Override
     public void onComplete(FilterPreferences filterPreferences) {
+
         searchAndDisplayResultsWithFilters(filterPreferences, 0, searchQuery);
         System.out.println(filterPreferences.toString());
     }
@@ -152,21 +168,23 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
 
     private void searchAndDisplayResultsWithFilters(FilterPreferences filterPreferences, int page, String searchQuery) {
 
+        checkForInternetAndNavigate();
+
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
 
-        String[] date= filterPreferences.getBeginDate().split("/");
+        String[] date = filterPreferences.getBeginDate().split("/");
 
         StringBuilder sb = new StringBuilder();
 
-        if(filterPreferences.isArts() || filterPreferences.isFashion() || filterPreferences.isSports())
+        if (filterPreferences.isArts() || filterPreferences.isFashion() || filterPreferences.isSports())
             sb.append("news_desk:(");
 
-        if(filterPreferences.isArts())
+        if (filterPreferences.isArts())
             sb.append("'Arts' ");
-        if(filterPreferences.isFashion())
+        if (filterPreferences.isFashion())
             sb.append("'Fashion' ");
-        if(filterPreferences.isSports())
+        if (filterPreferences.isSports())
             sb.append("'Sports'");
 
         sb.trimToSize();
@@ -175,28 +193,28 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
         requestParams.put("api-key", "cf6f54a4f8ad42e6899acaa526428ca8");
         requestParams.put("page", page);
         requestParams.put("sort", filterPreferences.getSort().toLowerCase());
-        if(date[0].length()==1)
-            requestParams.put("begin_date", date[2]+"0"+ date[0]+date[1]);
+        if (date[0].length() == 1)
+            requestParams.put("begin_date", date[2] + "0" + date[0] + date[1]);
         else
-            requestParams.put("begin_date", date[2]+"0"+ date[0]+date[1]);
-        if(filterPreferences.isArts() || filterPreferences.isFashion() || filterPreferences.isSports()){
+            requestParams.put("begin_date", date[2] + "0" + date[0] + date[1]);
+        if (filterPreferences.isArts() || filterPreferences.isFashion() || filterPreferences.isSports()) {
             sb.append(")");
             requestParams.put("fq", sb.toString());
         }
-        if(searchQuery!=null && !searchQuery.isEmpty())
+        if (searchQuery != null && !searchQuery.isEmpty())
             requestParams.put("q", searchQuery);
 
-        client.get(url, requestParams, new JsonHttpResponseHandler(){
+        client.get(url, requestParams, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("DEBUG", response.toString());
                 JSONArray articleResults = null;
-                try{
-                    articleResults =  response.getJSONObject("response").getJSONArray("docs");
+                try {
+                    articleResults = response.getJSONObject("response").getJSONArray("docs");
                     articles.addAll(0, Article.fromJSONArray(articleResults));
                     recyclerView.swapAdapter(new ArticleArrayAdapter(getApplicationContext(), articles), false);
-                }catch(JSONException e){
+                } catch (JSONException e) {
 
                 }
             }
@@ -205,11 +223,29 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.d("DEBUG", "Status code: " + statusCode);
                 Log.d("DEBUG", errorResponse.toString());
+                Toast.makeText(getApplicationContext(), "Something went wrong while fetching data", Toast.LENGTH_LONG).show();
             }
         });
 
+    }
 
+    private void checkForInternetAndNavigate() {
+        if( !isNetworkAvailable() || !CommonLib.isOnline()){
+            navitageToNoInternetActivity();
+        }
+    }
 
+    private void navitageToNoInternetActivity(){
+        Intent intent = new Intent(this, NoInternetConnectionActivity.class);
+        intent.putExtra("activityName", "ArticleActivity");
+        startActivity(intent);
+    }
+
+    private Boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
 

@@ -9,4 +9,6 @@
     <color name="colorSolitude">#E9EBEE</color>
     <color name="colorSanMarino">#4469AF</color>
     <color name="my_spinner_text_color">#090606</color>
+    <color name="fab_ripple">#7891ff</color>
+    <color name="blackHaze">#F7F7F7</color>
 </resources>
