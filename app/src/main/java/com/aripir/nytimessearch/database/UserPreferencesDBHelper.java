@@ -1,10 +1,12 @@
-package com.aripir.nytimessearch.models;
+package com.aripir.nytimessearch.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.aripir.nytimessearch.models.FilterPreferences;
 
 /**
  * Created by saripirala on 9/21/17.
