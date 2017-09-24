@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,6 +12,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.aripir.nytimessearch"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/fileprovider" />
+        </provider>
+
         <activity
             android:name=".activities.SearchActivity"
             android:label="@string/app_name"
@@ -21,6 +32,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.ArticleActivity"></activity>
+        <activity android:name=".activities.NoInternetConnectionActivity"
+            android:label="@string/no_internet_connection"
+            android:theme="@style/AppTheme.NoActionBar">
+            ></activity>
     </application>
 
 </manifest>

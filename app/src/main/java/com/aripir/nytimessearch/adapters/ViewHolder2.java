@@ -44,16 +44,10 @@ public class ViewHolder2 extends RecyclerView.ViewHolder {
         headline = (TextView) itemView.findViewById(R.id.headline2);
         newsCategory = (TextView) itemView.findViewById(R.id.newsCategory2);
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int itemPosition = getLayoutPosition();
-
-                Intent intent = new Intent(view.getContext(), ArticleActivity.class);
-                intent.putExtra("article", Parcels.wrap(articles.get(itemPosition)));
-                view.getContext().startActivity(intent);
-            }
+        itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), ArticleActivity.class);
+            intent.putExtra("article", Parcels.wrap(articles.get(getLayoutPosition())));
+            view.getContext().startActivity(intent);
         });
-
     }
 }
