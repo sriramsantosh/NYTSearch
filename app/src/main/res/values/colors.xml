@@ -11,4 +11,5 @@
     <color name="my_spinner_text_color">#090606</color>
     <color name="fab_ripple">#7891ff</color>
     <color name="blackHaze">#F7F7F7</color>
+    <color name="windowBackground">#62B7E2</color>
 </resources>

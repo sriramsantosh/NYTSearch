@@ -2,6 +2,8 @@ package com.aripir.nytimessearch.models;
 
 import android.util.Log;
 
+import com.aripir.nytimessearch.util.Constants;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -23,7 +25,6 @@ public class Article {
     private String headline;
     private String thumbNail;
     private String publishDate;
-
     private String newsDesk;
 
     public Article(){
@@ -34,17 +35,17 @@ public class Article {
     {
         try{
 
-            this.webUrl = jsonObject.getString("web_url");
-            this.headline = jsonObject.getJSONObject("headline").getString("main");
-            this.publishDate = jsonObject.getString("pub_date");
-            this.newsDesk = jsonObject.getString("new_desk");
-            JSONArray multimedia = jsonObject.getJSONArray("multimedia");
+            this.webUrl = jsonObject.getString(Constants.Article.WEB_URL);
+            this.headline = jsonObject.getJSONObject(Constants.Article.HEADLINE).getString(Constants.Article.MAIN);
+            this.publishDate = jsonObject.getString(Constants.Article.PUB_DATE);
+            this.newsDesk = jsonObject.getString(Constants.Article.NEWS_DESK);
+            JSONArray multimedia = jsonObject.getJSONArray(Constants.Article.MULTIMEDIA);
             if(multimedia!=null && multimedia.length()>0){
                 for(int i=0;i<multimedia.length(); i++){
                     JSONObject multimediaJSON = multimedia.getJSONObject(i);
-                    if(multimediaJSON.has("subtype"))
-                        if(multimediaJSON.getString("subtype").equalsIgnoreCase("wide"))
-                            this.thumbNail = "http://www.nytimes.com/" + multimediaJSON.getString("url");
+                    if(multimediaJSON.has(Constants.Article.SUBTYPE))
+                        if(multimediaJSON.getString(Constants.Article.SUBTYPE).equalsIgnoreCase(Constants.Article.WIDE))
+                            this.thumbNail = Constants.IMAGE_PREFIX_URL + multimediaJSON.getString(Constants.Article.URL);
 
                 }
             //    JSONObject multimediaJSON = multimedia.getJSONObject(0);
@@ -89,4 +90,8 @@ public class Article {
         return results;
     }
 
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
+    }
 }

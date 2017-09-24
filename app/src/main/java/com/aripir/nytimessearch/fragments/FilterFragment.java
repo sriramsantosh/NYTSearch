@@ -1,11 +1,7 @@
 package com.aripir.nytimessearch.fragments;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -22,7 +18,7 @@ import android.widget.TextView;
 import com.aripir.nytimessearch.R;
 
 import com.aripir.nytimessearch.models.FilterPreferences;
-import com.aripir.nytimessearch.models.UserPreferencesDBHelper;
+import com.aripir.nytimessearch.database.UserPreferencesDBHelper;
 
 import java.util.Calendar;
 
