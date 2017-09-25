@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,11 @@ import com.aripir.nytimessearch.R;
 import com.aripir.nytimessearch.models.FilterPreferences;
 import com.aripir.nytimessearch.database.UserPreferencesDBHelper;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by saripirala on 9/19/17.
@@ -72,16 +77,28 @@ public class FilterFragment extends DialogFragment {
         checkBoxSports = (CheckBox) view.findViewById(R.id.sportsSB);
         timeFrameSpinner = (Spinner)  view.findViewById(R.id.timeFrameSP);
 
-
         mCurrentDate = Calendar.getInstance();
+
+        FilterPreferences filterPreferences = userPreferencesDBHelper.getUserPreferences();
+
+        String dateText = filterPreferences.getBeginDate();
 
         day = mCurrentDate.get(Calendar.DAY_OF_MONTH);
         month = mCurrentDate.get(Calendar.MONTH);
         year = mCurrentDate.get(Calendar.YEAR);
 
-        FilterPreferences filterPreferences = userPreferencesDBHelper.getUserPreferences();
+        if(dateText != null || !dateText.isEmpty()) {
+            try{
+                String []date = dateText.split("/");
+                day = Integer.parseInt(date[1]);
+                month = Integer.parseInt(date[0]);
+                year = Integer.parseInt(date[2]);
+                --month;
+            }catch (NumberFormatException e){
+                Log.d("DEBUG", "NumberFormatException caught: " + e.getLocalizedMessage());
+            }
+        }
 
-       // datePickTV.setText(month+"/" + day + "/" + year);
         datePickTV.setText(filterPreferences.getBeginDate());
         if(filterPreferences.getSort().equalsIgnoreCase("oldest"))
             timeFrameSpinner.setSelection(1);
@@ -93,22 +110,18 @@ public class FilterFragment extends DialogFragment {
         if(!filterPreferences.isSports())
             checkBoxSports.setChecked(false);
 
-        datePickTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog dialog = new DatePickerDialog(getContext(), R.style.Theme_AppCompat_Light_DialogWhenLarge,mDateSetListener, year, month, day);
-                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-                dialog.show();
-            }
+        datePickTV.setOnClickListener(view12 -> {
+            DatePickerDialog dialog = new DatePickerDialog(getContext(), R.style.Theme_AppCompat_Light_DialogWhenLarge,mDateSetListener, year, month, day);
+            dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+            dialog.show();
         });
 
-        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                ++month;
-                datePickTV.setText(month+"/" + day + "/" + year);
-            }
+
+        mDateSetListener = (datePicker, year1, month1, day1) -> {
+            ++month1;
+            datePickTV.setText(month1 +"/" + day1 + "/" + year1);
         };
+
         // Fetch arguments from bundle and set title
         String title = getArguments().getString("title", "Enter Name");
         getDialog().setTitle("Filter");
@@ -119,13 +132,10 @@ public class FilterFragment extends DialogFragment {
         getDialog().getWindow()
                 .getAttributes().windowAnimations = R.style.DialogAnimation;
 
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userPreferencesDBHelper.insertFilterPreferences(datePickTV.getText().toString(), timeFrameSpinner.getSelectedItem().toString(), checkBoxArts.isChecked(), checkBoxFashion.isChecked(), checkBoxSports.isChecked() );
-                mListener.onComplete(new FilterPreferences(datePickTV.getText().toString(), timeFrameSpinner.getSelectedItem().toString(), checkBoxArts.isChecked(), checkBoxFashion.isChecked(), checkBoxSports.isChecked() ));
-                getDialog().dismiss();
-            }
+        saveBtn.setOnClickListener(view1 -> {
+            userPreferencesDBHelper.insertFilterPreferences(datePickTV.getText().toString(), timeFrameSpinner.getSelectedItem().toString(), checkBoxArts.isChecked(), checkBoxFashion.isChecked(), checkBoxSports.isChecked() );
+            mListener.onComplete(new FilterPreferences(datePickTV.getText().toString(), timeFrameSpinner.getSelectedItem().toString(), checkBoxArts.isChecked(), checkBoxFashion.isChecked(), checkBoxSports.isChecked() ));
+            getDialog().dismiss();
         });
     }
 

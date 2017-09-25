@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.aripir.nytimessearch.R;
-import com.aripir.nytimessearch.databinding.ActivityArticleBinding;
 import com.aripir.nytimessearch.databinding.ActivityNoInternetBinding;
 import com.aripir.nytimessearch.util.CommonLib;
 

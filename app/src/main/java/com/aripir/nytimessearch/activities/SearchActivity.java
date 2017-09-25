@@ -190,20 +190,28 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
             @Override
             public void onResponse(Call<NYTAPIResponse> call, Response<NYTAPIResponse> response) {
 
-
                 NYTAPIResponse rsp = response.body();
-                com.aripir.nytimessearch.models.Response response1 = rsp.getResponse();
-                List<Doc> docs = response1.getDocs();
 
-                try {
-                    JSONArray jsonArray = new JSONArray(docs.toString());
-                    List<Article> articlesLatest= Article.fromJSONArray(jsonArray);
-                    articles.addAll( articlesLatest);
+                if(rsp !=null){
+
+                    com.aripir.nytimessearch.models.Response response1 = rsp.getResponse();
+                    List<Doc> docs = response1.getDocs();
+
+                    try {
+                        JSONArray jsonArray = new JSONArray(docs.toString());
+                        List<Article> articlesLatest= Article.fromJSONArray(jsonArray);
+                        articles.addAll( articlesLatest);
+                        pbLoading.setVisibility(View.GONE);
+                        pbLoadMore.setVisibility(View.GONE);
+                        recyclerView.swapAdapter(new ArticleArrayAdapter(getApplicationContext(), articles), false);
+
+                    } catch (JSONException e) {
+                        Log.d("DEBUG", "Exception caught" + e.getLocalizedMessage());
+                    }
+                }else{
+                    Log.d("DEBUG", "Response body is null");
                     pbLoading.setVisibility(View.GONE);
                     pbLoadMore.setVisibility(View.GONE);
-                    recyclerView.swapAdapter(new ArticleArrayAdapter(getApplicationContext(), articles), false);
-                } catch (JSONException e) {
-
                 }
             }
 
@@ -211,7 +219,7 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
             public void onFailure(Call<NYTAPIResponse> call, Throwable t) {
 
                 Log.d("DEBUG", t.getLocalizedMessage());
-                Toast.makeText(getApplicationContext(), "Something went wrong while fetching data :(, please try again", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Something went wrong while fetching data :(, app will try to retry couple of times", Toast.LENGTH_LONG).show();
             }
         });
     }
