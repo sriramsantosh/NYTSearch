@@ -1,11 +1,16 @@
 package com.aripir.nytimessearch.network;
 
+import android.util.Log;
+
 import com.aripir.nytimessearch.util.Constants;
+
+import java.io.IOException;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -24,8 +29,11 @@ public class RetrofitUtils {
     }
 
     private static OkHttpClient client() {
+        OkHttpClient client = new OkHttpClient();
+
         return new OkHttpClient.Builder()
                 .addInterceptor(apiKeyInterceptor())
+                .addInterceptor(retryInterceptor())
                 .build();
     }
 
@@ -40,6 +48,28 @@ public class RetrofitUtils {
                     .url(url)
                     .build();
             return chain.proceed(request);
+        };
+    }
+
+    private static Interceptor retryInterceptor(){
+        return chain -> {
+            Request request = chain.request();
+
+            Response response = chain.proceed(request);
+
+            int tryCount = 0;
+            while (!response.isSuccessful() && tryCount < 3) {
+
+                Log.d("intercept", "Request is not successful - " + tryCount);
+
+                tryCount++;
+
+                // retry the request
+                response = chain.proceed(request);
+            }
+
+            // otherwise just pass the original response on
+            return response;
         };
     }
 

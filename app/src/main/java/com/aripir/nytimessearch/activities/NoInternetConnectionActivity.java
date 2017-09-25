@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.aripir.nytimessearch.R;
-import com.aripir.nytimessearch.databinding.ActivityArticleBinding;
 import com.aripir.nytimessearch.databinding.ActivityNoInternetBinding;
 import com.aripir.nytimessearch.util.CommonLib;
 
@@ -29,13 +28,12 @@ public class NoInternetConnectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_no_internet);
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_no_internet);
 
         toolbar = (Toolbar) findViewById(R.id.toolBar);
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
-        // setSupportActionBar(toolbar);
+         setSupportActionBar(toolbar);
 
         imageView = binding.imageView;
 

@@ -7,7 +7,9 @@ import android.widget.TextView;
 
 import com.aripir.nytimessearch.R;
 import com.aripir.nytimessearch.activities.CustomChromeActivity;
+import com.aripir.nytimessearch.activities.NoInternetConnectionActivity;
 import com.aripir.nytimessearch.models.Article;
+import com.aripir.nytimessearch.util.CommonLib;
 
 import org.parceler.Parcels;
 
@@ -44,11 +46,17 @@ public class ViewHolder2 extends RecyclerView.ViewHolder {
         newsCategory = (TextView) itemView.findViewById(R.id.newsCategory2);
 
         itemView.setOnClickListener(view -> {
-//            Intent intent = new Intent(view.getContext(), ArticleActivity.class);
-            Intent intent = new Intent(view.getContext(), CustomChromeActivity.class);
-            intent.putExtra("article", Parcels.wrap(articles.get(getLayoutPosition())));
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            view.getContext().startActivity(intent);
+
+            if(!CommonLib.isOnline()){
+                Intent intent = new Intent(view.getContext(), NoInternetConnectionActivity.class);
+                intent.putExtra("activityName", "ArticleActivity");
+                view.getContext().startActivity(intent);
+            }else {
+                Intent intent = new Intent(view.getContext(), CustomChromeActivity.class);
+                intent.putExtra("article", Parcels.wrap(articles.get(getLayoutPosition())));
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                view.getContext().startActivity(intent);
+            }
         });
     }
 }
