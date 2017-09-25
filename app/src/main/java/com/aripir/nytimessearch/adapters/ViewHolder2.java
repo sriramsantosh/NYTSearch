@@ -3,11 +3,10 @@ package com.aripir.nytimessearch.adapters;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aripir.nytimessearch.R;
-import com.aripir.nytimessearch.activities.ArticleActivity;
+import com.aripir.nytimessearch.activities.CustomChromeActivity;
 import com.aripir.nytimessearch.models.Article;
 
 import org.parceler.Parcels;
@@ -45,8 +44,10 @@ public class ViewHolder2 extends RecyclerView.ViewHolder {
         newsCategory = (TextView) itemView.findViewById(R.id.newsCategory2);
 
         itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), ArticleActivity.class);
+//            Intent intent = new Intent(view.getContext(), ArticleActivity.class);
+            Intent intent = new Intent(view.getContext(), CustomChromeActivity.class);
             intent.putExtra("article", Parcels.wrap(articles.get(getLayoutPosition())));
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             view.getContext().startActivity(intent);
         });
     }

@@ -1,27 +1,17 @@
 package com.aripir.nytimessearch.adapters;
 
-import android.app.ActionBar;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aripir.nytimessearch.models.Article;
 import com.aripir.nytimessearch.R;
-import com.aripir.nytimessearch.activities.ArticleActivity;
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
-
-import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -158,79 +148,4 @@ public class ArticleArrayAdapter extends  RecyclerView.Adapter<RecyclerView.View
         else
             return IMAGE_HEADLINE;
     }
-
-//    class ViewHolder extends RecyclerView.ViewHolder {
-//
-//        // Your holder should contain a member variable
-//        // for any view that will be set as you render a row
-//        private ImageView imageView;
-//        private TextView headline;
-//        private TextView newsCategory;
-//
-//        public ViewHolder(View itemView) {
-//            super(itemView);
-//            imageView = (ImageView) itemView.findViewById(R.id.articleImage);
-//            headline = (TextView) itemView.findViewById(R.id.headline);
-//            newsCategory = (TextView) itemView.findViewById(R.id.newsCategory);
-//
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    int itemPosition = getLayoutPosition();
-//                    Intent intent = new Intent(context, ArticleActivity.class);
-//                    intent.putExtra("article", Parcels.wrap(articles.get(itemPosition)));
-//                    context.startActivity(intent);
-//                }
-//            });
-//
-//        }
-//
-//        // Involves populating data into the item through holder
-//        public void bind(final Article article) {
-//
-//            imageView.setImageResource(0);
-//            headline.setText(article.getHeadline());
-//
-//            String thumbNail = article.getThumbNail();
-//            String publishDate = article.getPublishDate();
-//            String newsDesk = article.getNewsDesk().toLowerCase();
-//
-//
-//            if(newsDesk.contains("sports")){
-//                newsCategory.setBackgroundColor(Color.parseColor("#4469AF"));
-//                newsCategory.setText("SPORTS");
-//            }else if(newsDesk.contains("arts")){
-//                newsCategory.setBackgroundColor(Color.parseColor("#44B37F"));
-//                newsCategory.setText("ARTS");
-//            }else if(newsDesk.contains("fashion")){
-//                newsCategory.setBackgroundColor(Color.parseColor("#FDA137"));
-//                newsCategory.setText("FASHION");
-//            }
-//
-//            if (thumbNail != null && !thumbNail.isEmpty()) {
-//
-//                if(publishDate.contains("22")){
-//
-//                    int a = imageView.getLayoutParams().height;
-//                    int b = imageView.getLayoutParams().width;
-//
-//                    imageView.getLayoutParams().height = 720;
-//                    imageView.getLayoutParams().width = 540;
-//                    headline.setTextColor(Color.WHITE);
-//
-//                    imageView.requestLayout();
-//
-//                }
-//                Glide.with(context)
-//                        .load(Uri.parse(thumbNail))
-//                        .fitCenter()
-//                        .centerCrop()
-//                        .into(imageView);
-//
-////                Picasso.with(context).load(thumbNail).fit().centerCrop()
-////                        .into(imageView);
-//            }
-//        }
-//
-//    }
 }
