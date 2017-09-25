@@ -53,4 +53,9 @@ public class NoInternetConnectionActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
 }

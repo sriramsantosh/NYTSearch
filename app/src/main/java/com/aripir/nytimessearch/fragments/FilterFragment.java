@@ -93,12 +93,12 @@ public class FilterFragment extends DialogFragment {
                 day = Integer.parseInt(date[1]);
                 month = Integer.parseInt(date[0]);
                 year = Integer.parseInt(date[2]);
-                --month;
             }catch (NumberFormatException e){
                 Log.d("DEBUG", "NumberFormatException caught: " + e.getLocalizedMessage());
             }
         }
 
+        --month;
         datePickTV.setText(filterPreferences.getBeginDate());
         if(filterPreferences.getSort().equalsIgnoreCase("oldest"))
             timeFrameSpinner.setSelection(1);
