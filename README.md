@@ -44,6 +44,7 @@ The following additional **stretch** features(not included in the given list) wa
 * [x] Implemented two progress bars, one for general loading of articles which will be centered and the other is for infinite scrolling (it is placed at the bottom of the screen).
 * [x] Implemented retries for network calls by adding an interceptor (more details can be found at RetrofitUtils class).
 * [x] Added butterknife broilerplate for SearchActivity class.
+* [x] Implemented a DB storage that will save the user's preference in the database and will retrieve if for the searches.
 
 Here's a walkthrough of implemented user stories:
 
