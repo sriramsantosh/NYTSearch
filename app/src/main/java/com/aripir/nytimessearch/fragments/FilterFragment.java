@@ -123,10 +123,7 @@ public class FilterFragment extends DialogFragment {
         };
 
         // Fetch arguments from bundle and set title
-        String title = getArguments().getString("title", "Enter Name");
         getDialog().setTitle("Filter");
-        // Show soft keyboard automatically and request focus to field
-  //      mEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         getDialog().getWindow()

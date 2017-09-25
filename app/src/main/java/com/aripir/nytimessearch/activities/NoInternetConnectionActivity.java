@@ -28,13 +28,12 @@ public class NoInternetConnectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_no_internet);
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_no_internet);
 
         toolbar = (Toolbar) findViewById(R.id.toolBar);
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
-        // setSupportActionBar(toolbar);
+         setSupportActionBar(toolbar);
 
         imageView = binding.imageView;
 

@@ -57,8 +57,8 @@ public class ViewHolder1 extends RecyclerView.ViewHolder {
         newsCategory = (TextView) itemView.findViewById(R.id.newsCategory);
 
         itemView.setOnClickListener(view -> {
-           // Intent intent = new Intent(view.getContext(), ArticleActivity.class);
-             Intent intent = new Intent(view.getContext(), CustomChromeActivity.class);
+
+            Intent intent = new Intent(view.getContext(), CustomChromeActivity.class);
             intent.putExtra("article", Parcels.wrap(articles.get(getLayoutPosition())));
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             view.getContext().startActivity(intent);

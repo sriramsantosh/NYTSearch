@@ -47,10 +47,8 @@ import retrofit2.Response;
 
 public class SearchActivity extends AppCompatActivity implements FilterFragment.OnCompleteListener {
 
-    Toolbar toolbar;
     private List<Article> articles;
     private ArticleArrayAdapter articleArrayAdapter;
-    private RecyclerView recyclerView;
     private MenuItem searchItem;
     private UserPreferencesDBHelper userPreferencesDBHelper;
     private EndlessRecyclerViewScrollListener scrollListener;
@@ -63,14 +61,18 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
     @BindView(R.id.pbLoadMore)
     ProgressBar pbLoadMore;
 
+    @BindView(R.id.gvArticles)
+    RecyclerView recyclerView;
+
+    @BindView(R.id.toolBar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        toolbar = (Toolbar) findViewById(R.id.toolBar);
-        setSupportActionBar(toolbar);
         ButterKnife.bind(this);
-
+        setSupportActionBar(toolbar);
 
         pbLoading.setVisibility(View.VISIBLE);
 
@@ -80,13 +82,12 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
         if (userPreferencesDBHelper.isDBEmpty())
             userPreferencesDBHelper.insertFilterPreferences(new FilterPreferences()); // Enter default preferences into DB
 
-
         setUpViews();
     }
 
 
     private void setUpViews() {
-        recyclerView = (RecyclerView) findViewById(R.id.gvArticles);
+       // recyclerView = (RecyclerView) findViewById(R.id.gvArticles);
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
 
@@ -100,8 +101,6 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
         scrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
 
                 pbLoadMore.setVisibility(View.VISIBLE);
                 searchAndDisplayResultsWithFilters(userPreferencesDBHelper.getUserPreferences(), page, searchQuery);
