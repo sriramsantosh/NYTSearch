@@ -72,6 +72,8 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
         ButterKnife.bind(this);
 
 
+        pbLoading.setVisibility(View.VISIBLE);
+
         checkForInternetAndNavigate();
 
         userPreferencesDBHelper = UserPreferencesDBHelper.getInstance(getApplicationContext());
@@ -108,7 +110,6 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
 
         recyclerView.addOnScrollListener(scrollListener);
 
-        pbLoading.setVisibility(View.VISIBLE);
         searchAndDisplayResultsWithFilters(userPreferencesDBHelper.getUserPreferences(), 0, searchQuery);
     }
 
@@ -167,13 +168,14 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
     private void showFilterDialog() {
         FragmentManager fm = getSupportFragmentManager();
         FilterFragment filterFragment = FilterFragment.newInstance();
-        filterFragment.show(fm, "fragment_edit_name");
+        filterFragment.show(fm, "Filter");
     }
 
 
     @Override
     public void onComplete(FilterPreferences filterPreferences) {
 
+        articles.clear();
         pbLoading.setVisibility(View.VISIBLE);
         searchAndDisplayResultsWithFilters(filterPreferences, 0, searchQuery);
     }
@@ -188,16 +190,17 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
             @Override
             public void onResponse(Call<NYTAPIResponse> call, Response<NYTAPIResponse> response) {
 
-                pbLoading.setVisibility(View.GONE);
-                pbLoadMore.setVisibility(View.GONE);
+
                 NYTAPIResponse rsp = response.body();
                 com.aripir.nytimessearch.models.Response response1 = rsp.getResponse();
                 List<Doc> docs = response1.getDocs();
 
                 try {
                     JSONArray jsonArray = new JSONArray(docs.toString());
-                    List<Article> articles= Article.fromJSONArray(jsonArray);
-                    articles.addAll(0, articles);
+                    List<Article> articlesLatest= Article.fromJSONArray(jsonArray);
+                    articles.addAll( articlesLatest);
+                    pbLoading.setVisibility(View.GONE);
+                    pbLoadMore.setVisibility(View.GONE);
                     recyclerView.swapAdapter(new ArticleArrayAdapter(getApplicationContext(), articles), false);
                 } catch (JSONException e) {
 
@@ -212,69 +215,6 @@ public class SearchActivity extends AppCompatActivity implements FilterFragment.
             }
         });
     }
-
-//        private void searchAndDisplayResultsWithFilters(FilterPreferences filterPreferences, int page, String searchQuery) {
-//
-//        checkForInternetAndNavigate();
-//
-//        AsyncHttpClient client = new AsyncHttpClient();
-//        String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
-//
-//        String[] date = filterPreferences.getBeginDate().split("/");
-//
-//        StringBuilder sb = new StringBuilder();
-//
-//        if (filterPreferences.isArts() || filterPreferences.isFashion() || filterPreferences.isSports())
-//            sb.append("news_desk:(");
-//
-//        if (filterPreferences.isArts())
-//            sb.append("'Arts' ");
-//        if (filterPreferences.isFashion())
-//            sb.append("'Fashion' ");
-//        if (filterPreferences.isSports())
-//            sb.append("'Sports'");
-//
-//        sb.trimToSize();
-//
-//        RequestParams requestParams = new RequestParams();
-//        requestParams.put("api-key", "cf6f54a4f8ad42e6899acaa526428ca8");
-//        requestParams.put("page", page);
-//        requestParams.put("sort", filterPreferences.getSort().toLowerCase());
-//        if (date[0].length() == 1)
-//            requestParams.put("begin_date", date[2] + "0" + date[0] + date[1]);
-//        else
-//            requestParams.put("begin_date", date[2] + "0" + date[0] + date[1]);
-//        if (filterPreferences.isArts() || filterPreferences.isFashion() || filterPreferences.isSports()) {
-//            sb.append(")");
-//            requestParams.put("fq", sb.toString());
-//        }
-//        if (searchQuery != null && !searchQuery.isEmpty())
-//            requestParams.put("q", searchQuery);
-//
-//        client.get(url, requestParams, new JsonHttpResponseHandler() {
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                Log.d("DEBUG", response.toString());
-//                JSONArray articleResults = null;
-//                try {
-//                    articleResults = response.getJSONObject("response").getJSONArray("docs");
-//                    articles.addAll(0, Article.fromJSONArray(articleResults));
-//                    recyclerView.swapAdapter(new ArticleArrayAdapter(getApplicationContext(), articles), false);
-//                } catch (JSONException e) {
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-//                Log.d("DEBUG", "Status code: " + statusCode);
-//                Log.d("DEBUG", errorResponse.toString());
-//                Toast.makeText(getApplicationContext(), "Something went wrong while fetching data", Toast.LENGTH_LONG).show();
-//            }
-//        });
-//
-//    }
 
     private void checkForInternetAndNavigate() {
         if( !isNetworkAvailable() || !CommonLib.isOnline()){

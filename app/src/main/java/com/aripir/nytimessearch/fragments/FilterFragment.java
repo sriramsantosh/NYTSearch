@@ -39,8 +39,6 @@ public class FilterFragment extends DialogFragment {
     CheckBox checkBoxArts;
     private OnCompleteListener mListener;
     private UserPreferencesDBHelper userPreferencesDBHelper;
-
-
     Spinner timeFrameSpinner;
 
     public FilterFragment(){
@@ -146,5 +144,6 @@ public class FilterFragment extends DialogFragment {
             throw new ClassCastException(getActivity().toString() + " must implement OnCompleteListener");
         }
     }
+
 
 }
