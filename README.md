@@ -38,7 +38,7 @@ The following **stretch** features are implemented:
 * [x] Consume the New York Times API using the popular Retrofit networking library instead of Android Async HTTP.
 * [x] Replace the embedded WebView for viewing news articles with a Chrome Custom Tab using a custom action icon for sharing.
 
-The following **stretch** features(not included in the given list was also implemented).
+The following additional **stretch** features(not included in the given list) was also implemented.
 * [x] Added animation for the filter dialog (Upon clicking on it, it comes from down and upon clicking on Save button, it slides to the bottom).
 * [x] Date picker does not allow user to select future dates.
 * [x] Implemented two progress bars, one for general loading of articles which will be centered and the other is for infinite scrolling (it is placed at the bottom of the screen).
@@ -46,3 +46,35 @@ The following **stretch** features(not included in the given list was also imple
 * [x] Added butterknife broilerplate for SearchActivity class.
 
 Here's a walkthrough of implemented user stories:
+
+<img src='https://github.com/sriramsantosh/NYTSearch/blob/master/NYTSearch.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+## Notes
+
+* Infinite scrolling was definitely a difficult concept and it took some time for me to understand how it works.
+* I spent good amount of time in inderstanding the retrofit library. This is the first time i have used it and will not be the last time.
+
+## Open-source libraries used
+
+- [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
+- [Retrofit](https://github.com/square/retrofit) -Type-safe HTTP client for Android and Java by Square, Inc
+- [Glide](https://github.com/bumptech/glide) - An image loading and caching library for Android focused on smooth scrolling
+- [Gson](https://github.com/google/gson) - A Java serialization/deserialization library to convert Java Objects into JSON and back
+- [Parceler](https://github.com/johncarl81/parceler) - Android Parcelables made easy through code generation.
+- [Butterknife](https://github.com/JakeWharton/butterknife) - Bind Android views and callbacks to fields and methods.
+
+## License
+
+Copyright [2017] [Sriram Santosh Aripirala]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
